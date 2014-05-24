@@ -10,7 +10,9 @@ FIND_PACKAGE( OpenCV REQUIRED )
 # Declare the target (an executable)
 #ADD_EXECUTABLE(opencv_example  minarea.c)
 ADD_EXECUTABLE(nazt_cv_c nazt.c)
+ADD_EXECUTABLE(morph morph.c)
 
 TARGET_LINK_LIBRARIES(nazt_cv_c ${OpenCV_LIBS})
+TARGET_LINK_LIBRARIES(morph ${OpenCV_LIBS})
 
 #MESSAGE(STATUS "OpenCV_LIBS: ${OpenCV_LIBS}")
