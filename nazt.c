@@ -22,9 +22,12 @@ void help()
   int iLowV = 60;
  int iHighV = 255;
 
-
 IplConvKernel* element = 0;
-int element_shape = CV_SHAPE_RECT;
+int element_shape = CV_SHAPE_ELLIPSE;
+int max_iters = 5;
+int open_close_pos = 0;
+int erode_dilate_pos = 0;
+
 
 
 int main( int argc, char** argv )
@@ -82,12 +85,14 @@ int main( int argc, char** argv )
         // cvResize(frame, img_dst, CV_INTER_LINEAR);
         // cvResize(frame, hsv_frame, CV_INTER_LINEAR);
         // cvCvtColor(hsv_frame, hsv_frame, CV_RGB2HSV);
-        cvCvtColor(hsv_frame, hsv_frame, CV_RGB2HSV);
+        cvCvtColor(hsv_frame, hsv_frame, CV_BGR2HSV);
 
-        // CvScalar hsv_min = cvScalar(150, 84, 130, 0);
-        // CvScalar hsv_max = cvScalar(358, 256, 255, 0);
-        CvScalar hsv_min = cvScalar(hl, sl, vl, 0);
-        CvScalar hsv_max = cvScalar(hu, su, vu, 0);
+        CvScalar hsv_min = cvScalar(150, 84, 130, 0);
+        CvScalar hsv_max = cvScalar(358, 256, 255, 0);
+        hsv_min = cvScalar(hl, sl, vl, 0);
+        hsv_max = cvScalar(hu, su, vu, 0);
+        // CvScalar hsv_min = cvScalar(hl, sl, vl, 0);
+        // CvScalar hsv_max = cvScalar(hu, su, vu, 0);
 
         // cvCvtColor(frame, hsv_frame, CV_RGB2GRAY);
 
@@ -115,7 +120,21 @@ int main( int argc, char** argv )
         // cvInRangeS(hsv_frame, cvScalar(159, 135, 135, 0), cvScalar(179, 255, 255, 0), frame_threadsholed2);
         // cvInRangeS(hsv_frame, cvScalar(20, 100, 100, 0), cvScalar(30, 255, 255, 0), frame_threadsholed2);
         // cvInRangeS(hsv_frame, cvScalar(iLowH, iLowS, iLowV, 0), cvScalar(iHighH, iHighS, iHighV, 0), frame_threadsholed2);
-        cvInRangeS(hsv_frame, hsv_min, hsv_max, frame_threadsholed2);
+
+        // cvInRangeS(hsv_frame, hsv_min, hsv_max, frame_threadsholed2);
+        cvErode(hsv_frame,hsv_frame,element, 1);
+        cvDilate(hsv_frame,hsv_frame,element,1);
+
+        cvDilate(hsv_frame,hsv_frame,element,1);
+        cvErode(hsv_frame,hsv_frame,element, 1);
+        
+        cvInRangeS(hsv_frame, cvScalar(20, 100, 100, 0), cvScalar(30, 255, 255, 0), frame_threadsholed2);
+
+        int n = erode_dilate_pos - max_iters;
+        int an = n > 0 ? n : -n;
+
+        element = cvCreateStructuringElementEx( an*2+1, an*2+1, an, an, element_shape, 0 );
+
 
         // cvErode(frame_threadsholed2, frame_threadsholed2, getStructuringElement(MORPH_ELLIPSE, cvSize(5, 5)), 1);
         // cvDilate(frame_threadsholed2, frame_threadsholed2, getStructuringElement(CV_SHAPE_ELLIPSE, cvSize(5, 5)) ); 
