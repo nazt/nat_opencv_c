@@ -36,7 +36,19 @@ int main( int argc, char** argv )
     while (1) {
         char key;
         IplImage* frame = cvQueryFrame( capture ); 
+
         imgHSV = cvCreateImage(cvSize(frame->width,frame->height), IPL_DEPTH_8U, 3) ;
+
+        IplImage* channelRed = cvCreateImage(cvGetSize(frame), 8, 1);
+        IplImage* channelGreen = cvCreateImage(cvGetSize(frame), 8, 1);
+        IplImage* channelBlue = cvCreateImage(cvGetSize(frame), 8, 1);
+
+        cvSplit(frame, channelBlue, channelGreen, channelRed, NULL);
+
+        cvAdd(channelBlue, channelGreen, channelGreen, NULL);
+        cvSub(channelRed, channelGreen, channelRed, NULL);
+        cvThreshold(channelRed, channelRed, 20, 255, CV_THRESH_BINARY);
+
         cvCvtColor(frame, imgHSV, CV_BGR2HSV);
 
         IplImage* imgThresholded = cvCreateImage(cvSize(imgHSV->width,imgHSV->height), IPL_DEPTH_8U, 1) ;
@@ -72,6 +84,7 @@ int main( int argc, char** argv )
 
         // cvInRangeS(imgHSV, cvScalar(20, 100, 100, 0), cvScalar(30, 255, 255, 0), imgThresholded);
 
+
  // inRange(imgHSV, Scalar(0, sMin, vMin), Scalar(10, sMax, vMax), imgThresh);
 // inRange(imgHSV, Scalar(170, sMin, vMin), Scalar(180, sMax, vMax), imgThresh1);
 
@@ -93,8 +106,8 @@ int main( int argc, char** argv )
         // IplImage* iplImg = cvQueryFrame( capture );
         // frame = iplImg;
         // cvShowImage( "1", frame);
-        cvShowImage( "1", imgThresholded);
-        cvShowImage( "2", imgThresholded2);
+        cvShowImage( "1", channelRed);
+        // cvShowImage( "2", imgThresholded2);
         key = (char) cvWaitKey(10);
 
         if( key == 27 || key == 'q' || key == 'Q' ) // 'ESC'
