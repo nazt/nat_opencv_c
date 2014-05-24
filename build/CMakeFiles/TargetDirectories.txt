@@ -1,1 +1,0 @@
-/Users/nat/projects/opencv-2.4.8/nat_opencv_c/build/CMakeFiles/nazt_cv_c.dir
