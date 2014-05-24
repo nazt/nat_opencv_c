@@ -41,42 +41,27 @@ int main( int argc, char** argv )
 
         IplImage* imgThresholded = cvCreateImage(cvSize(imgHSV->width,imgHSV->height), IPL_DEPTH_8U, 1) ;
         IplImage* imgThresholded2 = cvCreateImage(cvSize(imgHSV->width,imgHSV->height), IPL_DEPTH_8U, 1) ;
-        // IplImage* tmp= cvCreateImage(cvSize(imgHSV->width,imgHSV->height), IPL_DEPTH_8U, 1) ;
+        IplImage* tmp= cvCreateImage(cvSize(imgHSV->width,imgHSV->height), IPL_DEPTH_8U, 1) ;
 
-        int iLowH = 170;
-        int iLowS = 0; 
-        int iLowV = 0;
+ int iLowH = 0;
+ int iHighH = 179;
 
-        int iHighH = 179;
-        int iHighS = 255;
-        int iHighV = 255;
+  int iLowS = 0; 
+ int iHighS = 255;
 
-        // cvResize(frame, )
+  int iLowV = 0;
+ int iHighV = 255;
+        inRange(imgHSV, cvScalar(iLowH, iLowS, iLowV, 0), cvScalar(iHighH, iHighS, iHighV, 0), imgThresholded); //Threshold the image
+        // cvInRangeS(imgHSV, cvScalar(20, 100, 100, 0),       cvScalar(30, 255, 255, 0)          , imgThresholded);
 
-         // cvInRangeS(frame, CV_RGB(155, 0, 0), CV_RGB(255, 130, 130), imgThresholded);
-        // cvInRangeS(imgHSV, cvScalar(0,20, 100, 100, 0),       cvScalar(30, 255, 255, 0)          , imgThresholded);
-
- // int hl = 5, hu = 75, sl = 40, su = 245, vl = 105, vu = 175;
-
-        // Detect a red ball
-        // CvScalar hsv_min = cvScalar(hl, sl, vl, 0);
-        // CvScalar hsv_max = cvScalar(hu, su, vu, 0);
-        // cvInRangeS(imgHSV,   cvScalar(0, iLowS, iLowV, 0), cvScalar(10, iHighS, iHighV, 0), imgThresholded); //Threshold the image
-        // cvInRangeS(imgHSV, cvScalar(iLowH, iLowS, iLowV, 0), cvScalar(iHighH, iHighS, iHighV, 0), imgThresholded); //Threshold the image
+        // cvInRangeS(imgHSV, cvScalar(0, iLowS, iLowV, 0), cvScalar(10, iHighS, iHighV, 0), imgThresholded); //Threshold the image
         // cvInRangeS(imgHSV, cvScalar(170, iLowS, iLowV, 0), cvScalar(180, iHighS, iHighV, 0), imgThresholded2); //Threshold the image
-        // cvInRangeS(imgHSV, hsv_min, hsv_max, imgThresholded2); //Threshold the image
-        // cvInRangeS(imgHSV, cvScalar(170, iLowS, iLowV, 0), cvScalar(180, iHighS, iHighV, 0), imgThresholded2); //Threshold the image
-
-
-        // YELLOW
-
-        // cvInRangeS(imgHSV, cvScalar(20, 100, 100, 0), cvScalar(30, 255, 255, 0), imgThresholded);
 
  // inRange(imgHSV, Scalar(0, sMin, vMin), Scalar(10, sMax, vMax), imgThresh);
 // inRange(imgHSV, Scalar(170, sMin, vMin), Scalar(180, sMax, vMax), imgThresh1);
 
         // imgThresholded += imgThresholded2;
-        // cvSum(imgThresholded, imgThresholded2, imgThresholded);
+        cvXor(imgThresholded, imgThresholded2, imgThresholded, NULL);
         // cvAnd(tmp, imgThresholded, imgThresholded, NULL);
 
 
@@ -93,8 +78,8 @@ int main( int argc, char** argv )
         // IplImage* iplImg = cvQueryFrame( capture );
         // frame = iplImg;
         // cvShowImage( "1", frame);
-        cvShowImage( "1", imgThresholded);
-        cvShowImage( "2", imgThresholded2);
+        cvShowImage( "3", imgHSV);
+        cvShowImage( "2", imgThresholded);
         key = (char) cvWaitKey(10);
 
         if( key == 27 || key == 'q' || key == 'Q' ) // 'ESC'
