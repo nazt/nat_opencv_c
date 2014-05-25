@@ -24,6 +24,7 @@ int main( int argc, char** argv )
     cvNamedWindow( "3", 3 ); 
     capture = cvCaptureFromCAM( argc == 2 ? argv[1][0] - '0' : 0 );
     IplImage *imgHSV;
+    IplImage *frame_small = NULL;
 
     if( !capture )
     {
@@ -39,15 +40,15 @@ int main( int argc, char** argv )
 
         imgHSV = cvCreateImage(cvSize(frame->width,frame->height), IPL_DEPTH_8U, 3) ;
 
-        IplImage* channelRed = cvCreateImage(cvGetSize(frame), 8, 1);
-        IplImage* channelGreen = cvCreateImage(cvGetSize(frame), 8, 1);
-        IplImage* channelBlue = cvCreateImage(cvGetSize(frame), 8, 1);
+        // IplImage* channelRed = cvCreateImage(cvGetSize(frame), 8, 1);
+        // IplImage* channelGreen = cvCreateImage(cvGetSize(frame), 8, 1);
+        // IplImage* channelBlue = cvCreateImage(cvGetSize(frame), 8, 1);
 
-        cvSplit(frame, channelBlue, channelGreen, channelRed, NULL);
+        // cvSplit(frame, channelBlue, channelGreen, channelRed, NULL);
 
-        cvAdd(channelBlue, channelGreen, channelGreen, NULL);
-        cvSub(channelRed, channelGreen, channelRed, NULL);
-        cvThreshold(channelRed, channelRed, 20, 255, CV_THRESH_BINARY);
+        // cvAdd(channelBlue, channelGreen, channelGreen, NULL);
+        // cvSub(channelRed, channelGreen, channelRed, NULL);
+        // cvThreshold(channelRed, channelRed, 20, 255, CV_THRESH_BINARY);
 
         cvCvtColor(frame, imgHSV, CV_BGR2HSV);
 
@@ -56,8 +57,8 @@ int main( int argc, char** argv )
         // IplImage* tmp= cvCreateImage(cvSize(imgHSV->width,imgHSV->height), IPL_DEPTH_8U, 1) ;
 
         int iLowH = 170;
-        int iLowS = 0; 
-        int iLowV = 0;
+        int iLowS = 150; 
+        int iLowV = 50;
 
         int iHighH = 179;
         int iHighS = 255;
@@ -77,7 +78,10 @@ int main( int argc, char** argv )
         // cvInRangeS(imgHSV, cvScalar(iLowH, iLowS, iLowV, 0), cvScalar(iHighH, iHighS, iHighV, 0), imgThresholded); //Threshold the image
         // cvInRangeS(imgHSV, cvScalar(170, iLowS, iLowV, 0), cvScalar(180, iHighS, iHighV, 0), imgThresholded2); //Threshold the image
         // cvInRangeS(imgHSV, hsv_min, hsv_max, imgThresholded2); //Threshold the image
-        // cvInRangeS(imgHSV, cvScalar(170, iLowS, iLowV, 0), cvScalar(180, iHighS, iHighV, 0), imgThresholded2); //Threshold the image
+         cvCreateTrackbar("LowH", "Control", &iLowH, 179, NULL); //Hue (0 - 179)
+         cvCreateTrackbar("HighH", "Control", &iHighH, 179, NULL);
+
+        cvInRangeS(imgHSV, cvScalar(iLowH, iLowS, iLowV, 0), cvScalar(iHighH, iHighS, iHighV, 0), imgThresholded2); //Threshold the image
 
 
         // YELLOW
@@ -106,7 +110,9 @@ int main( int argc, char** argv )
         // IplImage* iplImg = cvQueryFrame( capture );
         // frame = iplImg;
         // cvShowImage( "1", frame);
-        cvShowImage( "1", channelRed);
+        cvShowImage( "2", frame);
+        // cvShowImage( "1", channelRed);
+        cvShowImage( "3", imgThresholded2);
         // cvShowImage( "2", imgThresholded2);
         key = (char) cvWaitKey(10);
 
